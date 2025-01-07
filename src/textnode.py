@@ -1,10 +1,10 @@
 from enum import Enum
 from htmlnode import HTMLNode, LeafNode, ParentNode
 class TextType(Enum):
-    NORMAL = "normal"
+    TEXT = "text"
     BOLD = "bold"
     ITALIC = "italic"
-    CODE_TEXT = "code_text"
+    CODE = "code"
     LINKS = "links"
     IMAGES = "images"
 
@@ -21,7 +21,7 @@ class TextNode:
         return f"TextNode({self.text}, {self.text_type.value}, {self.url})"
 
 def text_node_to_html_node(TextNode):
-    if TextNode.text_type == TextType.NORMAL:
+    if TextNode.text_type == TextType.TEXT:
         return LeafNode(None, TextNode.text)
     if TextNode.text_type == TextType.BOLD:
         return LeafNode("b", TextNode.text)

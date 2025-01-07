@@ -18,7 +18,7 @@ class TestTextNode(unittest.TestCase):
         self.assertEqual(repr(node), "TextNode(This is a text node, bold, http://www.google.com)")
 
     def test_text_node_to_html_node_normal(self):
-        node = TextNode("This is a text node", TextType.NORMAL)
+        node = TextNode("This is a text node", TextType.TEXT)
         html_node = text_node_to_html_node(node)
         self.assertEqual(html_node.value, "This is a text node")
         self.assertIsNone(html_node.tag)
