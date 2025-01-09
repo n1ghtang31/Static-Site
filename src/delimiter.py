@@ -36,4 +36,88 @@ def extract_markdown_links(text):
 #regex to see only in the []: !\[([^\]]+)\]
 
 
-texts = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
+def split_nodes_image(old_nodes):
+    new_nodes = []
+    for old_node in old_nodes:
+        if old_node.text_type != TextType.TEXT:
+            new_nodes.append(old_node)
+        matches = extract_markdown_images(old_node.text)
+        if matches == []:
+            new_nodes.append(old_node)
+            continue
+            
+        original_text = old_node.text
+        last_end = 0
+        
+        for match in matches:
+            # Construct the full markdown pattern from the match
+            full_pattern = f"![{match[0]}]({match[1]})"
+            # Find where this pattern occurs in the original text
+            start = original_text.find(full_pattern, last_end)
+            end = start + len(full_pattern)
+            alt_text = match[0]
+            image_link = match[1]
+            
+            # Add text before match
+            if start > last_end:
+                new_nodes.append(TextNode(original_text[last_end:start], TextType.TEXT))
+                
+            # Add the image markdown
+            new_nodes.append(TextNode(alt_text, TextType.IMAGE, image_link))
+            
+            last_end = end
+            
+        # Add remaining text
+        if last_end < len(original_text):
+            new_nodes.append(TextNode(original_text[last_end:], TextType.TEXT))
+            
+    return new_nodes    
+
+def split_nodes_link(old_nodes):
+    new_nodes = []
+    for old_node in old_nodes:
+
+        if old_node.text_type != TextType.TEXT:
+            new_nodes.append(old_node)
+            
+        matches = extract_markdown_links(old_node.text)
+
+        if matches == []:
+            new_nodes.append(old_node)
+            continue
+
+        original_text = old_node.text
+        last_end = 0
+
+        for match in matches:
+            link_text = match[0]
+            link_url = match[1]
+            full_pattern = f"[{link_text}]({link_url})"
+
+            start = original_text.find(full_pattern, last_end)
+            end = start + len(full_pattern)
+
+
+            if start > last_end:
+                new_nodes.append(TextNode(original_text[last_end:start], TextType.TEXT))
+
+
+            new_nodes.append(TextNode(link_text, TextType.LINK, link_url))
+
+            last_end = end
+        
+        if last_end < len(original_text):
+            new_nodes.append(TextNode(original_text[last_end:], TextType.TEXT))
+
+    return new_nodes
+
+node1 = [TextNode(
+        "This is text with a [link]( and some text",
+        TextType.TEXT,
+        )]
+node2 = [TextNode(
+        "This is text with a [link]( and some text",
+        TextType.TEXT,
+    )]
+        
+print(split_nodes_image(node1))
