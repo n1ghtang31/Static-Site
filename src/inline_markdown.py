@@ -38,9 +38,16 @@ def extract_markdown_links(text):
 
 def split_nodes_image(old_nodes):
     new_nodes = []
+    try:
+        iter(old_nodes)
+        if isinstance(old_nodes, str):
+            old_nodes = [old_nodes]
+    except TypeError:
+        old_nodes = [old_nodes]
     for old_node in old_nodes:
         if old_node.text_type != TextType.TEXT:
             new_nodes.append(old_node)
+            continue
         matches = extract_markdown_images(old_node.text)
         if matches == []:
             new_nodes.append(old_node)
@@ -62,6 +69,7 @@ def split_nodes_image(old_nodes):
             if start > last_end:
                 new_nodes.append(TextNode(original_text[last_end:start], TextType.TEXT))
                 
+                
             # Add the image markdown
             new_nodes.append(TextNode(alt_text, TextType.IMAGE, image_link))
             
@@ -75,11 +83,18 @@ def split_nodes_image(old_nodes):
 
 def split_nodes_link(old_nodes):
     new_nodes = []
+    try:
+        iter(old_nodes)
+        if isinstance(old_nodes, str):
+            old_nodes = [old_nodes]
+    except TypeError:
+        old_nodes = [old_nodes]
     for old_node in old_nodes:
 
         if old_node.text_type != TextType.TEXT:
             new_nodes.append(old_node)
-            
+            continue
+
         matches = extract_markdown_links(old_node.text)
 
         if matches == []:
@@ -111,13 +126,16 @@ def split_nodes_link(old_nodes):
 
     return new_nodes
 
-node1 = [TextNode(
-        "This is text with a [link]( and some text",
-        TextType.TEXT,
-        )]
-node2 = [TextNode(
-        "This is text with a [link]( and some text",
-        TextType.TEXT,
-    )]
-        
-print(split_nodes_image(node1))
+
+
+def text_to_textnodes(init_text):
+        nodes = [TextNode(init_text, "text")]
+        nodes = split_nodes_image(nodes)
+        nodes = split_nodes_link(nodes)
+        nodes = split_nodes_delimiter(nodes, "**", "bold")
+        nodes = split_nodes_delimiter(nodes, "*", "italic")
+        nodes = split_nodes_delimiter(nodes, "`", "code")
+        return nodes
+
+
+
