@@ -27,11 +27,11 @@ def text_node_to_html_node(TextNode):
         return LeafNode("b", TextNode.text)
     if TextNode.text_type == TextType.ITALIC:
         return LeafNode("i", TextNode.text)
-    if TextNode.text_type == TextType.CODE_TEXT:
+    if TextNode.text_type == TextType.CODE:
         return LeafNode("code", TextNode.text)
-    if TextNode.text_type == TextType.LINKS:
+    if TextNode.text_type == TextType.LINK:
         return LeafNode("a", TextNode.text, {"href": TextNode.url})
-    if TextNode.text_type == TextType.IMAGES:
+    if TextNode.text_type == TextType.IMAGE:
         return LeafNode("img", None, {"src": TextNode.url, "alt": TextNode.text})
     else:
         raise ValueError("Invalid text type")

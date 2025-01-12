@@ -129,12 +129,14 @@ def split_nodes_link(old_nodes):
 
 
 def text_to_textnodes(init_text):
-        nodes = [TextNode(init_text, "text")]
+        nodes = TextNode(init_text, "text")
         nodes = split_nodes_image(nodes)
         nodes = split_nodes_link(nodes)
         nodes = split_nodes_delimiter(nodes, "**", "bold")
         nodes = split_nodes_delimiter(nodes, "*", "italic")
         nodes = split_nodes_delimiter(nodes, "`", "code")
+        if len(nodes) <= 1:
+            nodes = nodes[0]
         return nodes
 
 
