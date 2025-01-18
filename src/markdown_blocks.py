@@ -76,8 +76,9 @@ def markdown_to_html_node(markdown):
                     heading_node = LeafNode(f"h{heading_level}", heading_text)
                     nodes.append(heading_node)
             case str() if type == block_type_code:
-                block = LeafNode(block_type_code, block)
-                parent = ParentNode("pre", block)
+                stripped_block = block.strip("```")
+                leaf = [LeafNode(block_type_code, stripped_block)]
+                parent = ParentNode("pre", leaf)
                 nodes.append(parent)
             case str() if type == block_type_olist:
                 split_lines = block.split('\n')
