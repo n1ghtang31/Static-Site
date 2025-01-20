@@ -3,19 +3,19 @@ import shutil
 from generation import (
     clean_directory,
     transfer_static_to_public,
-    generate_page
+    generate_pages_recursive
     
 )
 
 static = "./static"
 destination = "./public"
-index_dest = "./public/index.html"
+index_dest = "./public/"
 template = "./template.html"
-source = "./content/index.md"
+source = "./content/"
 def main():
     clean_directory(static, destination)
     transfer_static_to_public(static, destination)
-    generate_page(source, template, index_dest)
+    generate_pages_recursive(source, template, index_dest)
 
 
 

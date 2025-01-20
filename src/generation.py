@@ -21,11 +21,30 @@ def generate_page(from_path, template_path, dest_path):
     dest_dir = os.path.dirname(dest_path)
     if not os.path.exists(dest_dir):
         os.makedirs(dest_dir)
-    
-    
+
     with open(dest_path, 'w') as file:
         file.write(final_html)
 
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    if not os.path.exists(dest_dir_path):
+        extra_log("folder does not exist creating", dest_dir_path)
+        os.makedirs(dest_dir_path)
+
+    for item in os.listdir(dir_path_content):
+
+        source_path = os.path.join(dir_path_content, item)
+        if item.endswith(".md"):
+            item = item.replace(".md", ".html")
+        destination_path = os.path.join(dest_dir_path, item)
+        if item[0] == ".":
+            continue
+        
+        if os.path.isdir(source_path):
+            generate_pages_recursive(source_path, template_path, destination_path)
+        else:
+            extra_log("Generating page for", item)
+            #need to change this to look at items not path
+            generate_page(source_path, template_path, destination_path)
 
 def extract_title(markdown):
     split_markdown = markdown.split("\n")
@@ -54,7 +73,7 @@ def transfer_static_to_public(source, destination):
     if not os.path.exists(destination):
         extra_log("folder does not exist creating", destination)
         os.makedirs(destination)
-            
+
     for item in os.listdir(source):
         source_path = os.path.join(source, item)
         destination_path = os.path.join(destination, item)
