@@ -9,13 +9,12 @@ from generation import (
 
 static = "./static"
 destination = "./public"
-index_dest = "./public/"
 template = "./template.html"
 source = "./content/"
 def main():
     clean_directory(static, destination)
     transfer_static_to_public(static, destination)
-    generate_pages_recursive(source, template, index_dest)
+    generate_pages_recursive(source, template, destination)
 
 
 
